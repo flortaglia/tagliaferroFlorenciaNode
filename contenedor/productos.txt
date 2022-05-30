@@ -1,0 +1,1 @@
+[{"title":"Escuadra","price":55500,"url":"https://www.freepik.es/fotos-vectores-gratis/celular","id":1}][{"title":"Escuadra","price":123.45,"url":"https://www.istockphoto.com/es/fotos/escuadra","id":1}][{"title":"calculadora","price":900,"url":"https://www.istockphoto.com/es/fotos/calculadora","id":1}]
