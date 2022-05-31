@@ -22,7 +22,6 @@ class Contenedor{
             let lastIndex= contenido.length
             let num= lastIndex-1
             let newId= lastIndex+1
-            let lastId = contenido[num].id
             let newObject=Object.assign(objeto,{'id':newId})
             contenido.push(newObject)
             await fs.promises.writeFile(this.nombre, JSON.stringify(contenido))
@@ -60,7 +59,6 @@ class Contenedor{
     async deleteById(id){
         try {
             const contenido = await this.load()
-            
             let objeto = contenido.filter(item=>item.id!=id)
             await fs.promises.writeFile(this.nombre,JSON.stringify(objeto))          
             
