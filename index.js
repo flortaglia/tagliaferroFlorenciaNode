@@ -14,19 +14,15 @@ class Contenedor{
         if(data.length ==0){
             let id = {'id':1}
             let newObject=Object.assign(objeto,id)
-            // console.log(`newObject:${newObject}`)
             const jsonData = [newObject]
-            // console.log(`jsonData:${jsonData}`)
             await fs.promises.writeFile(this.nombre ,JSON.stringify(jsonData))
             return id
         }else{    
             const contenido = JSON.parse(data)
             let lastIndex= contenido.length
-            // console.log(`lastIndex:${lastIndex}`)
             let num= lastIndex-1
             let newId= lastIndex+1
             let lastId = contenido[num].id
-            // console.log(`lastId:${lastId}`)
             let newObject=Object.assign(objeto,{'id':newId})
             contenido.push(newObject)
             await fs.promises.writeFile(this.nombre, JSON.stringify(contenido))
@@ -39,9 +35,12 @@ class Contenedor{
         }
        
     }
+    async load(){
+       return JSON.parse(await fs.promises.readFile( this.nombre ,'utf-8'))
+    }
     async getById(id){
         try {
-            const contenido = JSON.parse(await fs.promises.readFile( this.nombre ,'utf-8'))
+            const contenido = await this.load()
             let objeto = contenido.find(el=>el.id==id)
             if(objeto== undefined){return null} 
             return objeto
@@ -52,8 +51,7 @@ class Contenedor{
     }
     async getAll(){
         try {
-            const contenido = JSON.parse(await fs.promises.readFile( this.nombre ,'utf-8'))
-            console.log(contenido)
+            const contenido = await this.load()
             return contenido
         } catch (error) {
             console.log(`Error en getAll:${error}`)
@@ -61,9 +59,11 @@ class Contenedor{
     }
     async deleteById(id){
         try {
-            const contenido = JSON.parse(await fs.promises.readFile( this.nombre ,'utf-8'))
+            const contenido = await this.load()
+            
             let objeto = contenido.filter(item=>item.id!=id)
-            await fs.promises.writeFile(this.nombre,JSON.stringify(objeto))
+            await fs.promises.writeFile(this.nombre,JSON.stringify(objeto))          
+            
         } catch (error) {
             console.log(`Error en getById:${error}`)
         }
@@ -79,11 +79,11 @@ class Contenedor{
     }
 
 }
+
 const product =new Contenedor('productos.txt')
 
 async function test(){
     
-
     let idProduct = await product.save(
         {                                                                                                                                                    
         'title': 'Escuadra',                                                                                                                                 
@@ -113,16 +113,19 @@ async function test(){
 
     let productById = await product.getById(2)
     console.log("getById:", productById)
-    //  product.getAll().then((productogetAll)=>console.log(` ${productogetAll}`)) 
-    let productgetAll= await product.getAll()
     
-    console.log(`getAll: ${productgetAll}`)
+    let productgetAll= await product.getAll()
+    console.log("getAll", productgetAll)
+
     let productdeleteById = await product.deleteById(1)
-     console.log(`productdeleteById: ${productdeleteById}`)
+    console.log(`productdeleteById: ${productdeleteById}`)
+
     let productById2 = await product.getById(1)
-     console.log("getById:", productById2)
+    console.log("getById:", productById2)
+
     let productdeleteById2 = await product.deleteById(1)
-     console.log(`productdeleteById: ${productdeleteById2}`)  
+    console.log(`productdeleteById: ${productdeleteById2}`) 
+
     let productdeleteAll= await product.deleteAll()
     console.log(`productdeleteAll: ${productdeleteAll}`)
 
