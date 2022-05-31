@@ -5,35 +5,33 @@ const fs = require('fs')
 class Contenedor{
     constructor(rutaArchivo){
         this.nombre= rutaArchivo;
+        fs.promises.writeFile(`./${rutaArchivo}`,"")
     }
-    add(){
-
-    }
-
-     save(objeto){
+   
+    async save(objeto){
         try {
-           fs.readFile(this.nombre, async (err,data)=>{
-                if(data.length ==0){
-                    let id = {'id':1}
-                    let newObject=Object.assign(objeto,id)
-                    // console.log(newObject)
-                    const jsonData = [newObject]
-                    await fs.promises.appendFile(this.nombre ,JSON.stringify(jsonData))
-                    return id
-                }else{    
-                    const contenido = JSON.parse(data)
-                    let lastIndex= contenido.length
-                    // console.log(lastIndex)
-                    let num= lastIndex-1
-                    let newId= lastIndex+1
-                    let lastId = contenido[num].id
-                    // console.log(lastId)
-                    let newObject=Object.assign(objeto,{'id':newId})
-                    contenido.push(newObject)
-                    fs.promises.writeFile(this.nombre, JSON.stringify(contenido))
-                    return newId
-                }
-            })
+        let data = await fs.promises.readFile(this.nombre)
+        if(data.length ==0){
+            let id = {'id':1}
+            let newObject=Object.assign(objeto,id)
+            // console.log(`newObject:${newObject}`)
+            const jsonData = [newObject]
+            // console.log(`jsonData:${jsonData}`)
+            await fs.promises.writeFile(this.nombre ,JSON.stringify(jsonData))
+            return id
+        }else{    
+            const contenido = JSON.parse(data)
+            let lastIndex= contenido.length
+            // console.log(`lastIndex:${lastIndex}`)
+            let num= lastIndex-1
+            let newId= lastIndex+1
+            let lastId = contenido[num].id
+            // console.log(`lastId:${lastId}`)
+            let newObject=Object.assign(objeto,{'id':newId})
+            contenido.push(newObject)
+            await fs.promises.writeFile(this.nombre, JSON.stringify(contenido))
+            return newId
+        }
   
         } catch (error) {
             console.log("ERROR")
@@ -45,7 +43,7 @@ class Contenedor{
         try {
             const contenido = JSON.parse(await fs.promises.readFile( this.nombre ,'utf-8'))
             let objeto = contenido.find(el=>el.id==id)
-            if(objeto== undefined){ return null}
+            if(objeto== undefined){return null} 
             return objeto
         } catch (error) {
             console.log(`Error en getById:${error}`)
@@ -55,6 +53,7 @@ class Contenedor{
     async getAll(){
         try {
             const contenido = JSON.parse(await fs.promises.readFile( this.nombre ,'utf-8'))
+            console.log(contenido)
             return contenido
         } catch (error) {
             console.log(`Error en getAll:${error}`)
@@ -80,29 +79,57 @@ class Contenedor{
     }
 
 }
+const product =new Contenedor('productos.txt')
 
-// fs.mkdir('./contenedor',error=>{
-//     if(error){
-//         console.log(`Hubo un error:${error}`)
-//     }else{ console.log("contenedor creado")}
-// })
-// fs.writeFile('./contenedor/productos.txt',"",error=>{
-//     if(error){
-//         console.log("Hubo un error")
-//     }else{ console.log("contenedor creado")}
-// })
-const product =new Contenedor('./contenedor/productos.txt')
-let idProduct = product.save(
-    {                                                                                                                                                    
-    'title': 'Escuadra',                                                                                                                                 
-    'price': 123.45                                                                                                                                 
-  }
-)
+async function test(){
+    
 
-product.getById(2).then( products => console.log(products))
-product.getAll().then( products => console.log(products))
-product.deleteById(1).then( products => console.log(products))
-product.deleteAll().then( products => console.log(products))
+    let idProduct = await product.save(
+        {                                                                                                                                                    
+        'title': 'Escuadra',                                                                                                                                 
+        'price': 123.45 ,
+        'url': 'https://es.pngtree.com/so/calculadora-de-dibujos-animados'                                                                                                                               
+      }
+    )
+
+    console.log("Save:", idProduct)
+    let idProduct2 = await product.save(
+        {                                                                                                                                                    
+        'title': 'cuadra',                                                                                                                                 
+        'price': 123.45 ,
+        'url': 'https://es.pngtree.com/so/calculadora-de-dibujos-animados'                                                                                                                               
+      }
+    )
+    console.log("Save:", idProduct2)  
+
+    let idProduct3 = await product.save(
+        {                                                                                                                                                    
+        'title': 'dra',                                                                                                                                 
+        'price': 123.45 ,
+        'url': 'https://es.pngtree.com/so/calculadora-de-dibujos-animados'                                                                                                                               
+      }
+    )
+    console.log("Save:", idProduct3)
+
+    let productById = await product.getById(2)
+    console.log("getById:", productById)
+    //  product.getAll().then((productogetAll)=>console.log(` ${productogetAll}`)) 
+    let productgetAll= await product.getAll()
+    
+    console.log(`getAll: ${productgetAll}`)
+    let productdeleteById = await product.deleteById(1)
+     console.log(`productdeleteById: ${productdeleteById}`)
+    let productById2 = await product.getById(1)
+     console.log("getById:", productById2)
+    let productdeleteById2 = await product.deleteById(1)
+     console.log(`productdeleteById: ${productdeleteById2}`)  
+    let productdeleteAll= await product.deleteAll()
+    console.log(`productdeleteAll: ${productdeleteAll}`)
+
+}
+
+test()
+
 
 
 
