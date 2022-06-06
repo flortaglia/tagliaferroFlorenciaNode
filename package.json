@@ -1,0 +1,27 @@
+{
+  "name": "entregas",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flortaglia/tagliaferroFlorenciaNode.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/flortaglia/tagliaferroFlorenciaNode/issues"
+  },
+  "homepage": "https://github.com/flortaglia/tagliaferroFlorenciaNode#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.18.1",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
